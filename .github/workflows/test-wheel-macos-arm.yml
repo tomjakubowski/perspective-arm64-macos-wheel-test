@@ -34,16 +34,12 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install ./perspective*.whl
           python -m pip install pytest
+          python -m pip install numpy pandas pyarrow
 
       - name: Run import test
         run: |
           python -c "import perspective"
 
       - name: Run pytest (if available)
-        # doesn't seem likely that `tests` will exist in the cwd after installing the wheel? does the wheel even include them?
         run: |
-          if python -c "import pytest" && [ -d "tests" ]; then
-            pytest tests/
-          else
-            echo "No tests directory found or pytest not available"
-          fi
+          pytest --pyargs 'perspective.tests'
