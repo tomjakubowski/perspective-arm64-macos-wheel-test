@@ -27,13 +27,10 @@ jobs:
 
       - name: Download wheel
         run: |
-          curl -LO "${{ inputs.wheel_url }}"
+          curl --fail -LO "${{ inputs.wheel_url }}"
 
       - name: Install wheel and test dependencies
         run: |
-          ls -l
-          ls -l */
-          mv */*.whl . || true
           python -m pip install --upgrade pip
           python -m pip install ./perspective*.whl
           python -m pip install pytest
