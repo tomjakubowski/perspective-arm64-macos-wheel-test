@@ -34,7 +34,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install ./perspective*.whl
           python -m pip install pytest
-          python -m pip install numpy pandas pyarrow
+          python -m pip install faker ipywidgets numpy pandas psutil pyarrow tornado
 
       - name: Run import test
         run: |
