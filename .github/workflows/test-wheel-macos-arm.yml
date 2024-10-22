@@ -32,7 +32,7 @@ jobs:
       - name: Install wheel and test dependencies
         run: |
           ls -l
-          [[ -f *.zip ]] && unzip perspective*.zip
+          { [[ -f */*.whl ]] && mv */*.whl . } || true
           python -m pip install --upgrade pip
           python -m pip install ./perspective*.whl
           python -m pip install pytest
