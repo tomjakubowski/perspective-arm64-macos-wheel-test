@@ -4,47 +4,46 @@ on:
   workflow_dispatch:
     inputs:
       wheel_url:
-        description: 'URL to the wheel file'
+        description: "URL to the wheel file"
         required: true
       python_version:
-        description: 'Python version to use'
-        default: '3.11'
+        description: "Python version to use"
+        default: "3.11"
         required: true
 
 jobs:
   test:
     runs-on: macos-14
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ inputs.python_version }}
-        architecture: 'arm64'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+          architecture: "arm64"
 
-    - name: Download wheel
-      run: |
-        curl -L "${{ inputs.wheel_url }}" -o package.whl
-        
-    - name: Install wheel and test dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install package.whl
-        python -m pip install pytest
+      - name: Download wheel
+        run: |
+          curl -LO "${{ inputs.wheel_url }}"
 
-    - name: Run import test
-      run: |
-        # Extract package name from wheel filename
-        PACKAGE_NAME=$(python -c "import os; print(os.path.basename('${{ inputs.wheel_url }}').split('-')[0])")
-        python -c "import $PACKAGE_NAME; print(f'Successfully imported {PACKAGE_NAME}')"
+      - name: Install wheel and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ./perspective*.whl
+          python -m pip install pytest
 
-    - name: Run pytest (if available)
-      run: |
-        if python -c "import pytest" && [ -d "tests" ]; then
-          pytest tests/
-        else
-          echo "No tests directory found or pytest not available"
-        fi
+      - name: Run import test
+        run: |
+          python -c "import perspective"
+
+      - name: Run pytest (if available)
+        # doesn't seem likely that `tests` will exist in the cwd after installing the wheel? does the wheel even include them?
+        run: |
+          if python -c "import pytest" && [ -d "tests" ]; then
+            pytest tests/
+          else
+            echo "No tests directory found or pytest not available"
+          fi
