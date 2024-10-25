@@ -8,7 +8,7 @@ on:
         required: true
       python_version:
         description: "Python version to use"
-        default: "3.11"
+        default: "3.12"
         required: true
 
 jobs:

@@ -8,7 +8,7 @@ on:
         required: true
       python_version:
         description: "Python version to use"
-        default: "3.11"
+        default: "3.12"
         required: true
 
 jobs:
@@ -29,10 +29,11 @@ jobs:
         run: |
           curl --fail -LO "${{ inputs.wheel_url }}"
 
+      # FIXME: shouldn't need PSP_ARCH in future
       - name: Install wheel and test dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install ./perspective*.whl
+          PSP_ARCH=aarch64 python -m pip install ./perspective*.whl
           python -m pip install pytest
           python -m pip install faker ipywidgets numpy pandas psutil pyarrow tornado
 
