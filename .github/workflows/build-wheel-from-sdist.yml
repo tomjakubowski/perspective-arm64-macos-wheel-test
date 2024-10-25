@@ -1,0 +1,34 @@
+name: Test Wheel on macOS ARM64
+
+on:
+  workflow_dispatch:
+    inputs:
+      sdist_url:
+        description: "URL to the sdist"
+        required: true
+      python_version:
+        description: "Python version to use"
+        default: "3.11"
+        required: true
+
+jobs:
+  test:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+          architecture: "arm64"
+
+      - name: Download sdist
+        run: |
+          curl --fail -LO "${{ inputs.sdist_url }}"
+
+      - name: Install sdist
+        run: |
+          python -m pip install --no-clean -v ./perspective*.tar.gz
