@@ -3,7 +3,7 @@ name: Install from sdist on macOS ARM64
 on:
   workflow_dispatch:
     inputs:
-      sdist_url:
+      url:
         description: "URL to the sdist"
         required: true
       python_version:
@@ -25,9 +25,30 @@ jobs:
           python-version: ${{ inputs.python_version }}
           architecture: "arm64"
 
-      - name: Download sdist
+      - name: Parse URL
+        id: parse_url
         run: |
-          curl --fail -LO "${{ inputs.sdist_url }}"
+          URL="${{ inputs.url }}"
+
+          if [[ "$URL" =~ ^https://github\.com/.+/actions/runs/[0-9]+$ ]]; then
+            echo "is_gh=true" >> $GITHUB_OUTPUT
+            REPO=$(echo "$URL" | sed -E 's|https://github\.com/([^/]+/[^/]+)/actions/runs/[0-9]+|\1|')
+            RUN_ID=$(echo "$URL" | sed -E 's|.*/runs/([0-9]+)|\1|')
+            echo "repo=$REPO" >> $GITHUB_OUTPUT
+            echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download sdist with gh
+        if: steps.parse_url.outputs.is_gh == 'true'
+        run: |
+          repo=${{steps.parse_url.outputs.repo}}
+          run_id=${{steps.parse_url.outputs.run_id}}
+          gh run download --repo $repo -n perspective-sdist $run_id
+
+      - name: Download sdist with curl
+        if: steps.parse_url.outputs.is_gh == 'false'
+        run: |
+          curl --fail -LO "${{ inputs.url }}"
 
       - name: Install sdist
         run: |
