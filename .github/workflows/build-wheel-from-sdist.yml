@@ -55,4 +55,8 @@ jobs:
 
       - name: Install sdist
         run: |
-          python -m pip install --no-clean -v ./perspective*.tar.gz
+          if [[ -f "perspective_python-3.1.2.tar.gz" ]]; then
+            echo "setting PSP_ARCH for broken perspective-server 3.1.2"
+            PSP_ARCH=aarch64
+          fi
+          python -m pip install --no-clean -v ./perspective_python-*.tar.gz
