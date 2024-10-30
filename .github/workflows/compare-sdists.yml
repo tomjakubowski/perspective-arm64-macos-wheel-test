@@ -55,10 +55,14 @@ jobs:
           mkdir sdist1_contents sdist2_contents
           tar -xzf sdist1/*.tar.gz -C sdist1_contents
           tar -xzf sdist2/*.tar.gz -C sdist2_contents
-          (git diff -D --no-index sdist1_contents sdist2_contents || true) > diff.txt
+          (git diff -D --no-index sdist1_contents sdist2_contents || true) > sdists.diff
 
       - name: upload diff
         uses: actions/upload-artifact@v4
         with:
-          name: diff.txt
-          path: diff.txt
+          name: sdists.diff
+          path: sdists.diff
+
+      - name: Print colorful diff
+        run: |
+          git diff --color=always -D --no-index sdist1_contents sdist2_contents || true
