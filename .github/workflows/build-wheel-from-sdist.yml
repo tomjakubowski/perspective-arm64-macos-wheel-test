@@ -40,6 +40,8 @@ jobs:
 
       - name: Download sdist with gh
         if: steps.parse_url.outputs.is_gh == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           repo=${{steps.parse_url.outputs.repo}}
           run_id=${{steps.parse_url.outputs.run_id}}
