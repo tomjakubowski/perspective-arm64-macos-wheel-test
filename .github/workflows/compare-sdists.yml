@@ -52,7 +52,7 @@ jobs:
 
       - name: Compare file lists
         run: |
-          (git diff --color=always -D --no-index || true) <(tar -tzf sdist1/*.tar.gz | sort) <(tar -tzf sdist2/*.tar.gz | sort)
+          diff <(tar -tzf sdist1/*.tar.gz | sort) <(tar -tzf sdist2/*.tar.gz | sort)
 
       - name: Compare contents of sdist1 and sdist2
         run: |
