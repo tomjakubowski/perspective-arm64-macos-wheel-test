@@ -55,7 +55,7 @@ jobs:
           mkdir sdist1_contents sdist2_contents
           tar -xzf sdist1/*.tar.gz -C sdist1_contents
           tar -xzf sdist2/*.tar.gz -C sdist2_contents
-          git diff -D --no-index --no-exit-code sdist1_contents sdist2_contents
+          git diff -D --no-index sdist1_contents sdist2_contents || true > diff.txt
 
       - name: upload diff
         uses: actions/upload-artifact@v4
