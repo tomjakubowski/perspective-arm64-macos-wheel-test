@@ -1,0 +1,53 @@
+name: Compare PKG-INFO files in two sdists
+
+on:
+  workflow_dispatch:
+    inputs:
+      # for simplicity, presume sdist1 is not a gh actions url
+      sdist1:
+        description: "URL of sdist 1"
+        default: "https://files.pythonhosted.org/packages/a6/5b/8420b7d09fc70325bf66cb0b2c277bac6c9527f81ed44034c43b71d8e163/perspective_python-3.1.2.tar.gz"
+        required: true
+      sdist2:
+        description: "URL of sdist 2"
+        required: true
+
+jobs:
+  compare:
+    environment: urdrome
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download sdist 1
+        run: |
+          mkdir sdist1
+          curl --output-dir sdist1 -LO ${{inputs.sdist1}}
+      - name: Parse sdist2 URL
+        id: parse_url
+        run: |
+          URL="${{ inputs.sdist2 }}"
+
+          if [[ "$URL" =~ ^https://github\.com/.+/actions/runs/[0-9]+$ ]]; then
+            echo "is_gh=true" >> $GITHUB_OUTPUT
+            REPO=$(echo "$URL" | sed -E 's|https://github\.com/([^/]+/[^/]+)/actions/runs/[0-9]+|\1|')
+            RUN_ID=$(echo "$URL" | sed -E 's|.*/runs/([0-9]+)|\1|')
+            echo "repo=$REPO" >> $GITHUB_OUTPUT
+            echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download sdist2 with download-artifact
+        if: steps.parse_url.outputs.is_gh == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: perspective-python-sdist
+          path: .
+          github-token: ${{ secrets.GH_TOKEN }}
+          repository: ${{ steps.parse_url.outputs.repo }}
+          run-id: ${{ steps.parse_url.outputs.run_id }}
+
+      - name: Download sdist 2 with curl
+        run: |
+          mkdir sdist2
+          curl --output-dir sdist2 -LO ${{inputs.sdist2}}
+      - name: Compare PKG-INFO from sdist1 and sdist 2
+        run: |
+          diff <(tar -xf sdist1/*.tar.gz PKG-INFO) <(tar -xf sdist2/*.tar.gz PKG-INFO)
