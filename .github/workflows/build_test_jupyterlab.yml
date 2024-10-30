@@ -1,4 +1,4 @@
-name: Install from sdist on macOS ARM64
+name: Build and test jupyterlab from previous run
 
 on:
   workflow_dispatch:
