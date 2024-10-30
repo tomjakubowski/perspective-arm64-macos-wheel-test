@@ -51,14 +51,11 @@ jobs:
           curl --output-dir sdist2 -LO ${{inputs.sdist2}}
 
       - name: Compare contents of sdist1 and sdist2
-        shell: bash
         run: |
           mkdir sdist1_contents sdist2_contents
           tar -xzf sdist1/*.tar.gz -C sdist1_contents
           tar -xzf sdist2/*.tar.gz -C sdist2_contents
-          diffit=(git diff -D --no-index --no-exit-code)
-          "${diffit[@]}" sdist1_contents sdist2_contents > diff.txt
-          "${diffit[@]}" --color=always sdist1_contents sdist2_contents
+          git diff -D --no-index --no-exit-code sdist1_contents sdist2_contents > diff.txt
 
       - name: upload diff
         uses: actions/upload-artifact@v4
