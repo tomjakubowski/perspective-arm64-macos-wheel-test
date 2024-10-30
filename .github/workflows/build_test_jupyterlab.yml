@@ -13,6 +13,7 @@ on:
 
 jobs:
   build_and_test_toms_juptyerlab:
+    environment: urdrome
     # needs: [build_js, build_python]
     # runs-on: ubuntu-22.04
     runs-on: ${{ matrix.os }}
@@ -47,6 +48,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: perspective-js-dist
+          github-token: ${{ secrets.GH_TOKEN }}
           path: .
           repository: finos/perspective
           run-id: ${{ inputs.run_id }}
@@ -55,6 +57,7 @@ jobs:
         with:
           name: perspective-python-dist-${{ matrix.arch }}-${{ matrix.os }}-${{ matrix.python-version }}
           path: .
+          github-token: ${{ secrets.GH_TOKEN }}
           repository: finos/perspective
           run-id: ${{ inputs.run_id }}
 
