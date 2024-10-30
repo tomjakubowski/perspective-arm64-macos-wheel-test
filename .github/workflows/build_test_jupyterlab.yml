@@ -27,11 +27,31 @@ jobs:
         node-version: [20.x]
 
     steps:
+      # modified from build_and_test_jupyterlab in build.yaml
       - name: Checkout
         uses: actions/checkout@v4
         with:
           repository: tomjakubowski/perspective
           ref: pack-prebuilt-sdist-minimal
+
+      # install-deps/action.yaml
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: "3.29.6"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install JS dependencies
+        shell: bash
+        run: pnpm install
+
+      - name: Install Python dependencies
+        shell: bash
+        run: python -m pip install -r rust/perspective-python/requirements.txt
 
       # - name: Config
       #   id: config-step
