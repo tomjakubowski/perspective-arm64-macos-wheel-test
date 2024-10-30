@@ -39,7 +39,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: perspective-python-sdist
-          path: .
+          path: sdist2/
           github-token: ${{ secrets.GH_TOKEN }}
           repository: ${{ steps.parse_url.outputs.repo }}
           run-id: ${{ steps.parse_url.outputs.run_id }}
