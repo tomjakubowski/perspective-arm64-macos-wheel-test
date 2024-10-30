@@ -46,7 +46,7 @@ jobs:
         run: |
           repo=${{steps.parse_url.outputs.repo}}
           run_id=${{steps.parse_url.outputs.run_id}}
-          gh run download --repo $repo -n perspective-sdist $run_id
+          gh run download --repo $repo -n perspective-python-sdist $run_id
 
       - name: Download sdist with curl
         if: steps.parse_url.outputs.is_gh == 'false'
