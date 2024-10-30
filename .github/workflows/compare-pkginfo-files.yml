@@ -45,6 +45,7 @@ jobs:
           run-id: ${{ steps.parse_url.outputs.run_id }}
 
       - name: Download sdist 2 with curl
+        if: steps.parse_url.outputs.is_gh != 'true'
         run: |
           mkdir sdist2
           curl --output-dir sdist2 -LO ${{inputs.sdist2}}
