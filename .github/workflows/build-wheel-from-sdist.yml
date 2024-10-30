@@ -60,3 +60,21 @@ jobs:
             export PSP_ARCH=aarch64
           fi
           python -m pip install --no-clean -v ./perspective_python-*.tar.gz
+
+      - name: Test setup
+        run: |
+          python -m pip install pytest
+          python -m pip install faker ipywidgets numpy pandas psutil pyarrow tornado
+          python -m pip install jupyterlab
+
+      - name: Run import test
+        run: |
+          python -c "import perspective"
+
+      - name: Run pytest
+        run: |
+          pytest --pyargs 'perspective.tests'
+
+      - name: Test jupyter labextension
+        run: |
+          jupyter labextension list 2>&1 | grep @finos/perspective-jupyterlab
