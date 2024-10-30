@@ -49,6 +49,7 @@ jobs:
         run: |
           mkdir sdist2
           curl --output-dir sdist2 -LO ${{inputs.sdist2}}
-      - name: Compare PKG-INFO from sdist1 and sdist 2
+
+      - name: Compare contents of sdist1 and sdist2
         run: |
-          diff <(tar -xf sdist1/*.tar.gz PKG-INFO) <(tar -xf sdist2/*.tar.gz PKG-INFO)
+          git diff --no-index <(tar -xOf sdist1/*.tar.gz) <(tar -xOf sdist2/*.tar.gz)
