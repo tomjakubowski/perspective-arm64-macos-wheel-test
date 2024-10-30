@@ -1,4 +1,4 @@
-name: Compare PKG-INFO files in two sdists
+name: Compare contents of two sdists
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ on:
         default: "https://files.pythonhosted.org/packages/a6/5b/8420b7d09fc70325bf66cb0b2c277bac6c9527f81ed44034c43b71d8e163/perspective_python-3.1.2.tar.gz"
         required: true
       sdist2:
-        description: "URL of sdist 2"
+        description: "URL of sdist 2 (may also be a perspective )"
         required: true
 
 jobs:
@@ -52,4 +52,7 @@ jobs:
 
       - name: Compare contents of sdist1 and sdist2
         run: |
-          git diff --no-index <(tar -xOf sdist1/*.tar.gz) <(tar -xOf sdist2/*.tar.gz)
+          mkdir sdist1_contents sdist2_contents
+          tar -xzvf sdist1/*.tar.gz -C sdist1_contents
+          tar -xzvf sdist2/*.tar.gz -C sdist2_contents
+          git diff --no-index sdist1_contents sdist2_contents
