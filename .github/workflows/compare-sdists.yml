@@ -50,6 +50,10 @@ jobs:
           mkdir sdist2
           curl --output-dir sdist2 -LO ${{inputs.sdist2}}
 
+      - name: Compare file lists
+        run: |
+          git diff --color=always -D --no-index <(tar -tzf sdist1/*.tar.gz) <(tar -tzf sdist2/*.tar.gz)
+
       - name: Compare contents of sdist1 and sdist2
         run: |
           mkdir sdist1_contents sdist2_contents
