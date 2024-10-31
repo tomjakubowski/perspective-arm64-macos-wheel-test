@@ -25,12 +25,12 @@ jobs:
 
       - name: Config
         id: config-step
-        uses: finos/perspective/.github/actions/config
+        uses: finos/perspective/.github/actions/config@master
         # with:
         #   repository-name: finos/perspective
 
       - name: Initialize Build
-        uses: finos/perspective/.github/actions/install-deps
+        uses: finos/perspective/.github/actions/install-deps@master
         with:
           # repository-name: finos/perspective
           rust: "true"
