@@ -77,8 +77,8 @@ jobs:
           mkdir -p $HOME/.cargo
           cat > $HOME/.cargo/config.toml <<EOF
           [patch.crates-io]
-          perspective-client = { path = "rust/perspective-client" }
-          perspective-server = { path = "rust/perspective-server" }
+          perspective-client = { path = "$PWD/rust/perspective-client" }
+          perspective-server = { path = "$PWD/rust/perspective-server" }
           EOF
 
       - name: Install perspective-python sdist
