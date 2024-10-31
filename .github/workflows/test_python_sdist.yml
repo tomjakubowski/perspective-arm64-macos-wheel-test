@@ -3,8 +3,8 @@ name: test python sdist
 on:
   workflow_dispatch:
     inputs:
-      sdist_url:
-        description: "github actions run or URL to sdist"
+      run_url:
+        description: "github actions run to pull artifacts from"
         required: true
 jobs:
   test_python_sdist:
@@ -43,13 +43,10 @@ jobs:
           javascript: "false"
           skip_cache: ${{ steps.config-step.outputs.SKIP_CACHE }}
 
-      # - uses: actions/download-artifact@v4
-      #   with:
-      #     name: perspective-python-sdist
-      - name: Parse sdist2 URL
+      - name: Parse run URL
         id: parse_url
         run: |
-          URL="${{ inputs.sdist_url }}"
+          URL="${{ inputs.run_url }}"
 
           if [[ "$URL" =~ ^https://github\.com/.+/actions/runs/[0-9]+$ ]]; then
             echo "is_gh=true" >> $GITHUB_OUTPUT
@@ -57,20 +54,23 @@ jobs:
             RUN_ID=$(echo "$URL" | sed -E 's|.*/runs/([0-9]+)|\1|')
             echo "repo=$REPO" >> $GITHUB_OUTPUT
             echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+          else
+            echo "Could not parse run URL: $URL"
+            exit 1
           fi
 
-      - name: Download sdist with download-artifact
-        uses: actions/download-artifact@v4
-        if: ${{ steps.parse_url.outputs.is_gh == 'true' }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: perspective-metadata
+          repository: ${{ steps.parse_url.outputs.repo }}
+          run-id: ${{ steps.parse_url.outputs.run_id }}
+
+      - uses: actions/download-artifact@v4
         with:
           name: perspective-python-sdist
           github-token: ${{ secrets.GH_TOKEN }}
           repository: ${{ steps.parse_url.outputs.repo }}
           run-id: ${{ steps.parse_url.outputs.run_id }}
-
-      - name: Download sdist2 with curl
-        if: ${{ steps.parse_url.outputs.is_gh != 'true' }}
-        run: curl -LO ${{ inputs.sdist_url }}
 
       - name: Set up global perspective-server and perspective-client path overrides
         run: |
