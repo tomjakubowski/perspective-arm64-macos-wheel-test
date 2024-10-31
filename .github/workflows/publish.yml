@@ -54,14 +54,19 @@ jobs:
         id: config-step
         uses: tomjakubowski/perspective/.github/actions/config@master
 
-      - name: Initialize Build
-        uses: tomjakubowski/perspective/.github/actions/install-deps@master
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
         with:
-          rust: "false"
-          cpp: "false"
-          python: "false"
-          javascript: "false"
-          skip_cache: ${{ steps.config-step.outputs.SKIP_CACHE }}
+          version: 9
+
+      # - name: Initialize Build
+      #   uses: tomjakubowski/perspective/.github/actions/install-deps@master
+      #   with:
+      #     rust: "false"
+      #     cpp: "false"
+      #     python: "false"
+      #     javascript: "false"
+      #     skip_cache: ${{ steps.config-step.outputs.SKIP_CACHE }}
 
       - uses: actions/download-artifact@v4
         with:
