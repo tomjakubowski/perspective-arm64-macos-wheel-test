@@ -72,6 +72,15 @@ jobs:
         if: ${{ steps.parse_url.outputs.is_gh != 'true' }}
         run: curl -LO ${{ inputs.sdist_url }}
 
+      - name: Set up global perspective-server and perspective-client path overrides
+        run: |
+          mkdir -p $HOME/.cargo
+          cat > $HOME/.cargo/config.toml <<EOF
+          [patch.crates-io]
+          perspective-client = { path = "rust/perspective-client" }
+          perspective-server = { path = "rust/perspective-server" }
+          EOF
+
       - name: Install perspective-python sdist
         run: python -m pip install -vv ./perspective*.tar.gz
 
