@@ -62,6 +62,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: perspective-metadata
+          path: rust/
           github-token: ${{ secrets.GH_TOKEN }}
           repository: ${{ steps.parse_url.outputs.repo }}
           run-id: ${{ steps.parse_url.outputs.run_id }}
