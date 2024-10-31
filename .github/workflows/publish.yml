@@ -6,8 +6,8 @@ on:
         description: "github actions run to pull artifacts from"
         default: "https://github.com/finos/perspective/actions/runs/11615534995"
         required: true
-      ref:
-        description: "git ref to use"
+      tag:
+        description: "git tag to use (on tomjakubowski/perspective)"
         default: "v3.1.test8"
         required: true
 jobs:
@@ -45,10 +45,10 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/checkout@v4
-        with:
-          repository: ${{ steps.parse_url.outputs.repo }}
-          ref: ${{ inputs.ref }}
+      # - uses: actions/checkout@v4
+      #   with:
+      #     repository: ${{ steps.parse_url.outputs.repo }}
+      #     ref: ${{ inputs.ref }}
 
       - name: Config
         id: config-step
@@ -175,5 +175,8 @@ jobs:
             *.tgz
             *.arrow
             *.crate
+          # XXX(tom): this should use the parsed repo probably? idk
+          repository: tomjakubowski/perspective
+          tag_name: ${{ inputs.tag }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOM_PERSPECTIVE_PUSH_TOKEN_DANGER_DANGER }}
