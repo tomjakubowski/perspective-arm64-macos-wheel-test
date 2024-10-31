@@ -29,6 +29,9 @@ jobs:
         os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     environment: urdrome
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Parse run URL
         id: parse_url
@@ -163,6 +166,21 @@ jobs:
 
       - run: pnpm pack --pack-destination=../..
         working-directory: ./packages/perspective-jupyterlab
+
+      - name: set up npmrc to publish to github
+        run: |
+          cat >> $HOME/.npmrc <<EOF
+          //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+          @finos:registry=https://npm.pkg.github.com
+          always-auth=true
+          EOF
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: publish to github npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish assets
         uses: softprops/action-gh-release@v2
