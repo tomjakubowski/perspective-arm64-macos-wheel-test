@@ -1,0 +1,83 @@
+name: test sdist
+on:
+  workflow_dispatch:
+    inputs:
+      sdist_url:
+        description: "github actions run or URL to sdist"
+        required: true
+jobs:
+  test_python_sdist:
+    # needs: [build_and_test_jupyterlab]
+    runs-on: ${{ matrix.os }}
+    environment: urdrome
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+        arch:
+          - x86_64
+        python-version:
+          - 3.9
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Config
+        id: config-step
+        uses: finos/perspective/.github/actions/config
+        # with:
+        #   repository-name: finos/perspective
+
+      - name: Initialize Build
+        uses: finos/perspective/.github/actions/install-deps
+        with:
+          # repository-name: finos/perspective
+          rust: "true"
+          cpp: "true"
+          python: "true"
+          javascript: "false"
+          skip_cache: ${{ steps.config-step.outputs.SKIP_CACHE }}
+
+      # - uses: actions/download-artifact@v4
+      #   with:
+      #     name: perspective-python-sdist
+      - name: Parse sdist2 URL
+        id: parse_url
+        run: |
+          URL="${{ inputs.sdist_url }}"
+
+          if [[ "$URL" =~ ^https://github\.com/.+/actions/runs/[0-9]+$ ]]; then
+            echo "is_gh=true" >> $GITHUB_OUTPUT
+            REPO=$(echo "$URL" | sed -E 's|https://github\.com/([^/]+/[^/]+)/actions/runs/[0-9]+|\1|')
+            RUN_ID=$(echo "$URL" | sed -E 's|.*/runs/([0-9]+)|\1|')
+            echo "repo=$REPO" >> $GITHUB_OUTPUT
+            echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download sdist with download-artifact
+        uses: actions/download-artifact@v4
+        if: ${{ steps.parse_url.outputs.is_gh == 'true' }}
+        with:
+          name: perspective-python-sdist
+          github-token: ${{ secrets.GH_TOKEN }}
+          repository: ${{ steps.parse_url.outputs.repo }}
+          run-id: ${{ steps.parse_url.outputs.run_id }}
+
+      - name: Download sdist2 with curl
+        if: ${{ steps.parse_url.outputs.is_gh != 'true' }}
+        run: curl -LO ${{ inputs.sdist_url }}
+
+      - name: Install perspective-python sdist
+        run: python -m pip install -vv ./perspective*.tar.gz
+
+      - name: Verify labextension
+        run: |
+          jupyter labextension list --debug
+          jupyter labextension list 2>&1 | grep '@finos/perspective-python'
+
+      - name: Run import test
+        run: python -c 'import perspective'
+
+      - name: Run pytests
+        run: pytest -v --pyargs 'perspective.tests'
