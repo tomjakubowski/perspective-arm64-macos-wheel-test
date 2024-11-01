@@ -72,6 +72,8 @@ jobs:
       - name: Install sdist
         if: ${{ startsWith(matrix.os, 'windows') }}
         shell: cmd
+        env:
+          CARGO_TARGET_DIR: D:\psp-rust
         run: |
           for %%x in (perspective_python-*.tar.gz) do python -m pip install --no-clean -vv %%x
 
