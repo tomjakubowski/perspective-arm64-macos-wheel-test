@@ -72,7 +72,7 @@ jobs:
       - name: Install sdist
         if: ${{ startsWith(matrix.os, 'windows') }}
         run: |
-          for %x in (dir perspective_python-*.tar.gz) do python -m pip install --no-clean -vv %x
+          for %%x in (perspective_python-*.tar.gz) do python -m pip install --no-clean -vv %x
 
       - name: Test setup
         run: |
