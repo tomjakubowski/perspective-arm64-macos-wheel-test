@@ -13,12 +13,17 @@ on:
 
 jobs:
   test:
-    runs-on: macos-14
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - macos-14
+          - windows-2019
     environment: urdrome
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      # - name: Checkout repository
+      #   uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,6 +33,7 @@ jobs:
 
       - name: Parse URL
         id: parse_url
+        if: ${{ ! startsWith(matrix.os, 'windows') }}
         run: |
           URL="${{ inputs.url }}"
 
