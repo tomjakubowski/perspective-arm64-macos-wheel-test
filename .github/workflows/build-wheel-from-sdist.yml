@@ -19,6 +19,11 @@ jobs:
         os:
           - macos-14
           - windows-2019
+        include:
+          - os: macos-14
+            arch: arm64
+          - os: windows-2019
+            arch: x64
     environment: urdrome
 
     steps:
@@ -29,7 +34,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python_version }}
-          architecture: "arm64"
+          architecture: ${{ matrix.arch }}
 
       - name: Parse URL
         id: parse_url
