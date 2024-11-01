@@ -65,8 +65,14 @@ jobs:
           curl --fail -LO "${{ inputs.url }}"
 
       - name: Install sdist
+        if: ${{ ! startsWith(matrix.os, 'windows') }}
         run: |
           python -m pip install --no-clean -vv ./perspective_python-*.tar.gz
+
+      - name: Install sdist
+        if: ${{ startsWith(matrix.os, 'windows') }}
+        run: |
+          for %x in (dir perspective_python-*.tar.gz) do python -m pip install --no-clean -vv %x
 
       - name: Test setup
         run: |
