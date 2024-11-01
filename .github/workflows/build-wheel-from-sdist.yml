@@ -30,6 +30,23 @@ jobs:
       # - name: Checkout repository
       #   uses: actions/checkout@v4
 
+      - name: Windows init steps (vc143)
+        id: vcpkg-step
+        shell: pwsh
+        run: |
+          vcpkg.exe install boost-thread boost-algorithm boost-filesystem boost-multi-index boost-multiprecision boost-program-options boost-system boost-unordered boost-uuid
+          vcpkg.exe integrate install
+          echo "VCPKG_INSTALLATION_ROOT=${env:VCPKG_INSTALLATION_ROOT}"
+          echo "VCPKG_INSTALLATION_ROOT=${env:VCPKG_INSTALLATION_ROOT}" >> $env:GITHUB_OUTPUT
+          echo "${env:VCPKG_INSTALLATION_ROOT}" >> $env:GITHUB_PATH
+          echo "VCPKG_ROOT=${env:VCPKG_INSTALLATION_ROOT}" >> $env:GITHUB_ENV
+          dir env:
+        env:
+          PYTHON_VERSION: ${{ inputs.python_version }}
+          VCPKG_DEFAULT_TRIPLET: x64-windows
+          VCPKG_PLATFORM_TOOLSET: v143
+        if: ${{ runner.os == 'Windows' }}
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
