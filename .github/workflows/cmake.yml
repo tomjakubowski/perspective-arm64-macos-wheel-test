@@ -20,7 +20,7 @@ jobs:
     runs-on: windows-2019
     steps:
       - name: Setup miniforge
-        uses: conda-incubator/setup-miniconda
+        uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-version: latest
       - run: conda info
