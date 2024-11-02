@@ -1,0 +1,33 @@
+name: CMake tests
+on:
+  workflow_dispatch: {}
+jobs:
+  test_plain:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: "3.29.6"
+      - run: cmake --version
+      - run: cmake -B build/ -S cmake/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cmake-dir
+          path: build/
+  test_conda:
+    runs-on: windows-2019
+    steps:
+      - name: Setup miniforge
+        uses: conda-incubator/setup-miniconda
+        with:
+          miniforge-version: latest
+      - run: conda info
+      - run: conda install cmake
+      - run: cmake --version
+      - run: cmake -B build/ -S cmake/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cmake-dir
+          path: build/
