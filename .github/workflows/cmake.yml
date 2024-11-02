@@ -19,6 +19,7 @@ jobs:
   test_conda:
     runs-on: windows-2019
     steps:
+      - uses: actions/checkout@v4
       - name: Setup miniforge
         uses: conda-incubator/setup-miniconda@v3
         with:
