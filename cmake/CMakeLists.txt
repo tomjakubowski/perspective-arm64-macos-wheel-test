@@ -1,5 +1,5 @@
+cmake_minimum_required(VERSION 3.22)
 project(cmake_test)
-cmake_minimum_required(3.22)
 
 message(STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}")
