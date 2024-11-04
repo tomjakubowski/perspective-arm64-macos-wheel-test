@@ -61,6 +61,7 @@ jobs:
       # crates.io.  Patch the build to instead use .crate artifacts built
       # previously in the workflow
       - name: Set up path overrides for perspective .crate contents
+        shell: bash
         run: |
           (cd crates && tar xvf perspective-client-*.crate && tar xvf perspective-server-*.crate)
           CLIENT_CRATE_ROOT=$(ls -d "$PWD"/crates/perspective-client-*/ | head -n 1)
