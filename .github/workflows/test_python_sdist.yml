@@ -22,6 +22,9 @@ jobs:
         python-version:
           - 3.9
     steps:
+      # NB: this checkout is incoherent - it should use the same repo/ref that
+      # triggered the action run
+      # the checkout is only used for the config/install-deps actions
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -41,7 +44,7 @@ jobs:
           javascript: "false"
           skip_cache: ${{ steps.config-step.outputs.SKIP_CACHE }}
 
-      - uses: ./.github/actions/download-remote-artifact
+      - uses: tomjakubowski/perspective-oneoff-tests/.github/actions/download-remote-artifact@${{github.ref}}
         with:
           name: perspective-rust
           path: crates/
