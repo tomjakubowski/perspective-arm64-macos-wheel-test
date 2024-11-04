@@ -44,7 +44,7 @@ jobs:
           javascript: "false"
           skip_cache: ${{ steps.config-step.outputs.SKIP_CACHE }}
 
-      - uses: tomjakubowski/perspective-oneoff-tests/.github/actions/download-remote-artifact@${{github.ref}}
+      - uses: tomjakubowski/perspective-oneoff-tests/.github/actions/download-remote-artifact@main
         with:
           name: perspective-rust
           path: crates/
