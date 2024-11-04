@@ -51,7 +51,7 @@ jobs:
           run_url: ${{ inputs.run_url }}
           github-token: ${{ secrets.GH_TOKEN }}
 
-      - uses: ./.github/actions/download-remote-artifact
+      - uses: tomjakubowski/perspective-oneoff-tests/.github/actions/download-remote-artifact@main
         with:
           name: perspective-python-sdist
           run_url: ${{ inputs.run_url }}
