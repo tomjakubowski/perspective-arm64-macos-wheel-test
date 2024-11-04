@@ -1,0 +1,45 @@
+# .github/actions/download-remote-artifact/action.yml
+name: "Download Remote Artifact"
+description: "Downloads an artifact from a different GitHub repository or workflow run"
+
+inputs:
+  run_url:
+    description: "GitHub Actions run URL (format: https://github.com/owner/repo/actions/runs/123456)"
+    required: true
+  name:
+    description: "Name of the artifact to download"
+    required: true
+  path:
+    description: "Directory where to download the artifact"
+    required: false
+  github-token:
+    description: "GitHub token with access to the repository"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Parse run URL
+      id: parse_url
+      shell: bash
+      run: |
+        URL="${{ inputs.run_url }}"
+
+        if [[ "$URL" =~ ^https://github\.com/.+/actions/runs/[0-9]+$ ]]; then
+          echo "is_gh=true" >> $GITHUB_OUTPUT
+          REPO=$(echo "$URL" | sed -E 's|https://github\.com/([^/]+/[^/]+)/actions/runs/[0-9]+|\1|')
+          RUN_ID=$(echo "$URL" | sed -E 's|.*/runs/([0-9]+)|\1|')
+          echo "repo=$REPO" >> $GITHUB_OUTPUT
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        else
+          echo "Could not parse run URL: $URL"
+          exit 1
+        fi
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+        github-token: ${{ inputs.github-token }}
+        repository: ${{ steps.parse_url.outputs.repo }}
+        run-id: ${{ steps.parse_url.outputs.run_id }}

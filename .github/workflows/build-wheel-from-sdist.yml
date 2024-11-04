@@ -38,7 +38,6 @@ jobs:
         id: vcpkg-step
         shell: pwsh
         run: |
-          vcpkg.exe install boost-thread boost-algorithm boost-filesystem boost-multi-index boost-multiprecision boost-program-options boost-system boost-unordered boost-uuid
           vcpkg.exe integrate install
           echo "VCPKG_INSTALLATION_ROOT=${env:VCPKG_INSTALLATION_ROOT}"
           echo "VCPKG_INSTALLATION_ROOT=${env:VCPKG_INSTALLATION_ROOT}" >> $env:GITHUB_OUTPUT
