@@ -46,4 +46,5 @@ jobs:
           perspective-server = { path = "$SERVER_CRATE_ROOT" }
           EOF
       - run: conda info
+      - run: conda install conda-build
       - run: conda build -m .ci_support/win_64_python3.12.____cpython.yaml recipe/
