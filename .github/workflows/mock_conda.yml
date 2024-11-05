@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: tomjakubowski/perspective-feedstock
-          ref: 3.1.4-from-sist
+          ref: 3.1.4-from-sdist
       # TODO: rewrite meta.yaml to use sdist from local file:// url, downloaded with download-remote-artifact
       # also parse version from the sdist's filename?
       - name: Setup miniforge
