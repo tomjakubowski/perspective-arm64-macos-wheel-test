@@ -34,7 +34,7 @@ jobs:
           echo uname "$(uname)"
           # if [[ "$(uname)" =~ "CYGWIN" ]]; then
           CLIENT_CRATE_ROOT=$(cygpath -m "$CLIENT_CRATE_ROOT")
-          SERVER_CRATE_ROOT=$(cygpath -m "$CLIENT_CRATE_ROOT")
+          SERVER_CRATE_ROOT=$(cygpath -m "$CLIENT_SERVER_ROOT")
           # fi
 
           echo "CLIENT_CRATE_ROOT" "$CLIENT_CRATE_ROOT"
