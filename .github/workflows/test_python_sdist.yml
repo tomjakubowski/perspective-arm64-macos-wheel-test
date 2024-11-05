@@ -67,6 +67,9 @@ jobs:
           CLIENT_CRATE_ROOT=$(ls -d "$PWD"/crates/perspective-client-*/ | head -n 1)
           SERVER_CRATE_ROOT=$(ls -d "$PWD"/crates/perspective-server-*/ | head -n 1)
 
+          echo "CLIENT_CRATE_ROOT" "$CLIENT_CRATE_ROOT"
+          echo "PWD" "$PWD"
+
           mkdir -p $HOME/.cargo
           cat > $HOME/.cargo/config.toml <<EOF
           [patch.crates-io]
