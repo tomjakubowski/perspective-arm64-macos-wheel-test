@@ -1,0 +1,49 @@
+name: Mock Conda build, simulates running on developer machine
+on:
+  workflow_dispatch:
+    inputs:
+      perspective_run_url:
+        description: "URL for perspective CI run"
+        required: true
+jobs:
+  build_conda:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: tomjakubowski/perspective-feedstock
+          ref: 3.1.4-from-sist
+      # TODO: rewrite meta.yaml to use sdist from local file:// url, downloaded with download-remote-artifact
+      # also parse version from the sdist's filename?
+      - name: Setup miniforge
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+      - uses: tomjakubowski/perspective-oneoff-tests/.github/actions/download-remote-artifact@main
+        with:
+          run_url: ${{ inputs.perspective_run_url }}
+          name: perspective-rust
+          path: crates/
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up path overrides for perspective .crate contents
+        shell: bash
+        run: |
+          (cd crates && tar xvf perspective-client-*.crate && tar xvf perspective-server-*.crate)
+          CLIENT_CRATE_ROOT=$(ls -d "$PWD"/crates/perspective-client-*/ | head -n 1)
+          SERVER_CRATE_ROOT=$(ls -d "$PWD"/crates/perspective-server-*/ | head -n 1)
+          if [[ "$(uname)" =~ "CYGWIN" ]]; then
+            CLIENT_CRATE_ROOT=$(cygpath -m "$CLIENT_CRATE_ROOT")
+            SERVER_CRATE_ROOT=$(cygpath -m "$CLIENT_CRATE_ROOT")
+          fi
+
+          echo "CLIENT_CRATE_ROOT" "$CLIENT_CRATE_ROOT"
+          echo "PWD" "$PWD"
+
+          mkdir -p $HOME/.cargo
+          cat > $HOME/.cargo/config.toml <<EOF
+          [patch.crates-io]
+          perspective-client = { path = "$CLIENT_CRATE_ROOT" }
+          perspective-server = { path = "$SERVER_CRATE_ROOT" }
+          EOF
+      - run: conda info
+      - run: conda build -m .ci_support/win_64_python3.12.____cpython.yaml recipe/
