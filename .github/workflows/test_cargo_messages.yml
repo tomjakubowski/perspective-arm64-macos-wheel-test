@@ -1,0 +1,13 @@
+name: test cargo messages
+on:
+  workflow_dispatch:
+    inputs: {}
+
+jobs:
+  test_cargo:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Show build script
+        run: cat build_messages/build.rs
+      - name: Run verbose build
+        run: cargo build -vv -p build_messages
