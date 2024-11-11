@@ -91,6 +91,13 @@ jobs:
           jupyter labextension list --debug
           jupyter labextension list 2>&1 | grep '@finos/perspective-jupyterlab'
 
+      - name: Verify licenses are installed
+        shell: bash
+        run: |
+          pip show -f perspective-python > wheel_installed_files.txt
+          grep licenses/LICENSE.md wheel_installed_files.txt
+          grep licenses/LICENSE_THIRDPARTY_cargo.yml wheel_installed_files.txt
+
       - name: Run import test
         run: python -c 'import perspective'
 
