@@ -95,9 +95,10 @@ jobs:
         shell: bash
         run: |
           pip show -f perspective-python > wheel_installed_files.txt
-          cat wheel_installed_files.txt
-          grep licenses/LICENSE.md wheel_installed_files.txt
-          grep licenses/LICENSE_THIRDPARTY_cargo.yml wheel_installed_files.txt
+          # Maturin got this wrong: the packages should be in .dist-info/licenses/
+          # https://github.com/PyO3/maturin/pull/862
+          grep .dist-info/license_files/LICENSE.md wheel_installed_files.txt
+          grep .dist-info/license_files/LICENSE_THIRDPARTY_cargo.yml wheel_installed_files.txt
 
       - name: Run import test
         run: python -c 'import perspective'
