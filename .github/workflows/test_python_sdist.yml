@@ -95,6 +95,7 @@ jobs:
         shell: bash
         run: |
           pip show -f perspective-python > wheel_installed_files.txt
+          cat wheel_installed_files.txt
           grep licenses/LICENSE.md wheel_installed_files.txt
           grep licenses/LICENSE_THIRDPARTY_cargo.yml wheel_installed_files.txt
 
