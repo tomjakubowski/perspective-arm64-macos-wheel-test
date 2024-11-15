@@ -67,7 +67,7 @@ jobs:
           CLIENT_CRATE_ROOT=$(ls -d "$PWD"/crates/perspective-client-*/ | head -n 1)
           SERVER_CRATE_ROOT=$(ls -d "$PWD"/crates/perspective-server-*/ | head -n 1)
           uname
-          if [[ "$(uname)" =~ "CYGWIN" ]]; then
+          if [[ "$(uname)" =~ "MINGW" ]]; then
             CLIENT_CRATE_ROOT=$(cygpath -m "$CLIENT_CRATE_ROOT")
             SERVER_CRATE_ROOT=$(cygpath -m "$CLIENT_CRATE_ROOT")
           fi
@@ -99,8 +99,8 @@ jobs:
           # Maturin got this wrong: the packages should be in .dist-info/licenses/
           # Newer versions of Maturin will fix it, so search for either location.
           # https://github.com/PyO3/maturin/pull/862 https://github.com/PyO3/maturin/pull/2181
-          grep '.dist-info/(license|license_files)/LICENSE.md' wheel_installed_files.txt
-          grep '.dist-info/(license|license_files)/LICENSE_THIRDPARTY_cargo.yml' wheel_installed_files.txt
+          grep -E '.dist-info/(license|license_files)/LICENSE.md' wheel_installed_files.txt
+          grep -E '.dist-info/(license|license_files)/LICENSE_THIRDPARTY_cargo.yml' wheel_installed_files.txt
 
       - name: Run import test
         run: python -c 'import perspective'
