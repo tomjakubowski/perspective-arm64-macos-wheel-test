@@ -69,7 +69,7 @@ jobs:
           uname
           if [[ "$(uname)" =~ "MINGW" ]]; then
             CLIENT_CRATE_ROOT=$(cygpath -m "$CLIENT_CRATE_ROOT")
-            SERVER_CRATE_ROOT=$(cygpath -m "$CLIENT_CRATE_ROOT")
+            SERVER_CRATE_ROOT=$(cygpath -m "$SERVER_CRATE_ROOT")
           fi
 
           echo "CLIENT_CRATE_ROOT" "$CLIENT_CRATE_ROOT"
